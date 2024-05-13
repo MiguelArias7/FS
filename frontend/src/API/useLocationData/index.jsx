@@ -2,18 +2,26 @@ import { useEffect, useState } from "react";
 import { useLocalStorage } from "../../components/useLocalStorage/index.jsx";
 
 function useLocationData() {
-  const { item: locationData, saveItem: saveLocationData, deleteItem: deleteLocationData, loading, error: errorStorage } = useLocalStorage("LOCATION_DATA", []);
+  const {
+    item: locationData,
+    saveItem: saveLocationData,
+    deleteItem: deleteLocationData,
+    loading,
+    error: errorStorage,
+  } = useLocalStorage("LOCATION_DATA", {
+    value: [],
+  });
 
   let [errorLocationData, setErrorLocationData] = useState(false);
   let [loadingLocationData, setLoadingLocationData] = useState(true);
 
   useEffect(() => {
-    if (locationData && loadingLocationData) setLoadingLocationData(false);
-  }, [locationData]);
+    if (locationData.value && loadingLocationData) setLoadingLocationData(false);
+  }, [locationData, loadingLocationData]);
 
   useEffect(() => {
-    if (locationData && !loadingLocationData) getLocationData();
-  }, [loadingLocationData]);
+    if (locationData.value.length === 0 && !loadingLocationData) getLocationData();
+  }, [locationData, loadingLocationData]);
 
   const fetchLocationData = async () => {
     try {
@@ -30,14 +38,9 @@ function useLocationData() {
     }
   };
 
-  const isUpdateLocationData = () => {
-    if (!locationData | (locationData.length === 0)) return true;
-    return false;
-  };
-
   const getLocationData = async () => {
     //If the TRM has not been initilizad.
-    if (isUpdateLocationData()) await fetchLocationData();
+    if (!locationData || locationData?.value?.length === 0) await fetchLocationData();
   };
 
   const eraseLocationData = () => {
@@ -56,7 +59,6 @@ function useLocationData() {
   };
 
   function getDepartamentos() {
-    // getLocationData();
     let uniqueDepartamentos = [];
 
     for (const item of locationData.value) {
@@ -71,7 +73,6 @@ function useLocationData() {
   }
 
   function getMunicipios(codDepartamento) {
-    // getLocationData();
     let uniqueDepartamentos = locationData.value.filter((item) => item.c_digo_dane_del_departamento === codDepartamento);
 
     console.log("uniqueDepartamentos", uniqueDepartamentos);
