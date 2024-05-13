@@ -8,43 +8,46 @@ import ScrollToTop from "../../components/ScrollToTop";
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/footer";
 import { Profile } from "../Profile";
-
-const visibleRoutes = [
-  {
-    path: "/",
-    name: "Who are we?",
-    element: <WhoAreWe></WhoAreWe>,
-  },
-  {
-    path: "/register",
-    name: "Register",
-    element: <Register></Register>,
-  },
-  {
-    path: "/login",
-    name: "Login",
-    element: <Login></Login>,
-  },
-];
-
-const otherRoutes = [
-  {
-    path: "*",
-    element: <NotFound></NotFound>,
-    name: "Not found",
-  },
-  {
-    path: "/profile",
-    name: "profile",
-    element: <Profile></Profile>,
-  },
-];
-
-function AppRoutes() {
-  return useRoutes([...visibleRoutes, ...otherRoutes]);
-}
+import { useDataUser } from "../../components/useDataUser";
 
 function App() {
+  let { dataLogin, loadingLogin, saveLogin, deleteLogin } = useDataUser();
+
+  const visibleRoutes = [
+    {
+      path: "/",
+      name: "Who are we?",
+      element: <WhoAreWe></WhoAreWe>,
+    },
+    {
+      path: "/register",
+      name: "Register",
+      element: <Register></Register>,
+    },
+    {
+      path: "/login",
+      name: "Login",
+      element: <Login saveLogin={saveLogin}></Login>,
+    },
+  ];
+
+  const otherRoutes = [
+    {
+      path: "*",
+      element: <NotFound></NotFound>,
+      name: "Not found",
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      element: <Profile dataLogin={dataLogin} loadingLogin={loadingLogin} deleteLogin={deleteLogin}></Profile>,
+    },
+  ];
+
+  function AppRoutes() {
+    return useRoutes([...visibleRoutes, ...otherRoutes]);
+  }
+
   return (
     <div
       className="min-h-screen   

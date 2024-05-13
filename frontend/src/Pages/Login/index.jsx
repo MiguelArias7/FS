@@ -8,15 +8,13 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAriadnaApi } from "../../API/useAriadnaApi";
 import { TightLayout } from "../../components/TightLayout";
-import { useLocalStorage } from "../../components/useLocalStorage";
+import PropTypes from "prop-types";
 /**
  * Renders a login form and handles form submission.
  *
  * @return {JSX.Element} The login form component.
  */
-function Login() {
-  const { saveItem: saveUserData } = useLocalStorage("USER_DATA", {});
-
+function Login({ saveLogin }) {
   let { login } = useAriadnaApi();
   let navigate = useNavigate();
   const [allowRegister, setAllowRegister] = useState(true);
@@ -93,10 +91,9 @@ function Login() {
     notificationLogin();
     login(dataUser.email, dataUser.password)
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
           response.json().then((data) => {
-            saveUserData(data.data);
+            saveLogin(data.data);
           });
 
           updateRegistrationSuccess();
@@ -195,4 +192,7 @@ function Login() {
   );
 }
 
+Login.propTypes = {
+  saveLogin: PropTypes.func,
+};
 export { Login };

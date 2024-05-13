@@ -18,6 +18,7 @@ function Register() {
   let [departamentoSelect, setDepartamentoSelect] = useState("");
   let [departamentos, setDepartamentos] = useState([]);
   let [municipios, setMunicipios] = useState([]);
+
   const {
     register,
     formState: { errors },
@@ -96,6 +97,7 @@ function Register() {
         required: "Required",
       },
       onChange: (value) => setDepartamentoSelect(value),
+      dataSource: departamentos,
     },
     {
       id: "id_municipio",
@@ -105,6 +107,7 @@ function Register() {
         required: "Required",
       },
       onChange: (value) => console.log(value),
+      dataSource: municipios,
     },
   ];
   // #endregion
@@ -145,7 +148,7 @@ function Register() {
   const onSubmitForm = async (dataUser) => {
     notificationRegister();
 
-    registerApi(dataUser.email, dataUser.password, dataUser.name, dataUser.address, dataUser.id_municipio, dataUser.id_departamento)
+    registerApi(dataUser.email, dataUser.password, dataUser.name, dataUser.address, dataUser.id_departamento, dataUser.id_municipio)
       .then((response) => {
         if (response.status === 200) {
           updateRegistrationSuccess();
@@ -162,6 +165,7 @@ function Register() {
   };
   // #endregion
 
+  // #region Component
   return (
     <TightLayout>
       <section className="flex-grow flex flex-col justify-center overflow-hidden mt-4">
@@ -227,16 +231,10 @@ function Register() {
                       className={`rounded-lg w-full border-[3px] px-1  ${field.error?.message ? "transition-all duration-300 delay-200 border-youtube " : "transition-all duration-300"}`}
                       onChange={(event) => field.onChange(event.target.value)}
                     >
-                      {field.id === "id_departamento" &&
-                        departamentos.map((item) => (
-                          <option key={item.c_digo_dane_del_departamento} value={item.c_digo_dane_del_departamento}>
-                            {item.departamento}
-                          </option>
-                        ))}
-                      {field.id === "id_municipio" &&
-                        municipios.map((item) => (
-                          <option key={item.c_digo_dane_del_municipio} value={item.c_digo_dane_del_municipio}>
-                            {item.municipio}
+                      {field.dataSource &&
+                        field.dataSource.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
                           </option>
                         ))}
                     </select>
@@ -288,6 +286,7 @@ function Register() {
       />
     </TightLayout>
   );
+  // #endregion
 }
 
 export { Register };

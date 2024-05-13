@@ -4,16 +4,15 @@ import { useEffect, useState } from "react";
 import { useLocationData } from "../../API/useLocationData";
 import { useAriadnaApi } from "../../API/useAriadnaApi";
 import { TightLayout } from "../../components/TightLayout";
-import { useLocalStorage } from "../../components/useLocalStorage";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-function Profile() {
+function Profile({ dataLogin, loadingLogin, deleteLogin }) {
   let navigate = useNavigate();
 
   let { logout } = useAriadnaApi();
 
-  const [allowRegister, setAllowRegister] = useState(true);
-  const { item: dataLogin, loading: loadingLogin, deleteItem: deleteLogin } = useLocalStorage("USER_DATA", {});
+  const [allowLogOut, setAllowLogOut] = useState(true);
 
   let [fields, setFields] = useState([]);
 
@@ -35,12 +34,11 @@ function Profile() {
 
   useEffect(() => {
     setFields([
-      { id: "id_departamento", title: "Deparment", value: departamento.departamento },
-      { id: "id_municipio", title: "Municipality", value: municipio.municipio },
+      { id: "id_departamento", title: "Deparment", value: departamento.name },
+      { id: "id_municipio", title: "Municipality", value: municipio.name },
       { id: "email", title: "Email", value: dataLogin?.email },
       { id: "address", title: "Address", value: dataLogin?.address },
     ]);
-    console.log(dataLogin);
   }, [dataLogin, municipio, departamento]);
 
   return (
@@ -64,11 +62,12 @@ function Profile() {
             ))}
             <button
               type="button"
-              disabled={!allowRegister}
+              disabled={!allowLogOut}
               className={`bg-tertiary text-secundary col-span-2 w-1/2  rounded-md transition-all delay-300 duration-200  ${
-                !allowRegister ? "opacity-10 border" : "hover:scale-125 hover:bg-gold hover:text-primary"
+                !allowLogOut ? "opacity-10 border" : "hover:scale-125 hover:bg-gold hover:text-primary"
               }`}
               onClick={() => {
+                setAllowLogOut(false);
                 deleteLogin();
                 logout();
                 navigate("/");
@@ -83,4 +82,9 @@ function Profile() {
   );
 }
 
+Profile.propTypes = {
+  dataLogin: PropTypes.object,
+  loadingLogin: PropTypes.bool,
+  deleteLogin: PropTypes.func,
+};
 export { Profile };

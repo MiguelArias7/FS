@@ -62,10 +62,10 @@ function useLocationData() {
     let uniqueDepartamentos = [];
 
     for (const item of locationData.value) {
-      if (uniqueDepartamentos.findIndex((element) => element.c_digo_dane_del_departamento === item.c_digo_dane_del_departamento) === -1) {
+      if (uniqueDepartamentos.findIndex((element) => element.id === item.c_digo_dane_del_departamento) === -1) {
         uniqueDepartamentos.push({
-          c_digo_dane_del_departamento: item.c_digo_dane_del_departamento,
-          departamento: item.departamento,
+          id: item.c_digo_dane_del_departamento,
+          name: item.departamento,
         });
       }
     }
@@ -74,15 +74,13 @@ function useLocationData() {
 
   function getMunicipios(codDepartamento) {
     let uniqueDepartamentos = locationData.value.filter((item) => item.c_digo_dane_del_departamento === codDepartamento);
-
-    console.log("uniqueDepartamentos", uniqueDepartamentos);
     let uniqueMunicipios = [];
 
     for (const item of uniqueDepartamentos) {
-      if (uniqueMunicipios.findIndex((element) => element.c_digo_dane_del_municipio === item.c_digo_dane_del_municipio) === -1) {
+      if (uniqueMunicipios.findIndex((element) => element.id === item.c_digo_dane_del_municipio) === -1) {
         uniqueMunicipios.push({
-          c_digo_dane_del_municipio: item.c_digo_dane_del_municipio,
-          municipio: item.municipio,
+          id: item.c_digo_dane_del_municipio,
+          name: item.municipio,
         });
       }
     }
@@ -91,21 +89,21 @@ function useLocationData() {
 
   function getDepartamentoById(id_departamento) {
     let departamento = {
-      departamento: "Not found",
+      id: id_departamento,
+      name: "Not found",
     };
-    locationData.value.findIndex((item) => {
-      if (item.c_digo_dane_del_departamento === id_departamento) departamento = item;
-    });
+    let foundItem = locationData.value.find((item) => item.c_digo_dane_del_departamento === id_departamento);
+    if (foundItem) departamento = { id: foundItem.c_digo_dane_del_departamento, name: foundItem.departamento };
     return departamento;
   }
 
   function getMunicipioById(id_municipio) {
     let municipio = {
-      municipio: "Not found",
+      id: id_municipio,
+      name: "Not found",
     };
-    locationData.value.findIndex((item) => {
-      if (item.c_digo_dane_del_municipio === id_municipio) municipio = item;
-    });
+    let foundItem = locationData.value.find((item) => item.c_digo_dane_del_municipio === id_municipio);
+    if (foundItem) municipio = { id: foundItem.c_digo_dane_del_municipio, name: foundItem.municipio };
     return municipio;
   }
 
