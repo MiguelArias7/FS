@@ -80,34 +80,30 @@ function Login({ saveLogin }) {
       autoClose: 2000,
     });
 
-  const updateRegistrationFail = () =>
+  const updateRegistrationFail = (message) =>
     toast.update(toastId.current, {
-      render: "Failed to login",
+      render: `Failed to login - ${message}`,
       type: toast.TYPE.ERROR,
       autoClose: 2000,
     });
 
   const onSubmitForm = async (dataUser) => {
-    notificationLogin();
-    login(dataUser.email, dataUser.password)
-      .then((response) => {
-        if (response.status === 200) {
-          response.json().then((data) => {
-            saveLogin(data.data);
-          });
+    try {
+      notificationLogin();
+      const response = await login(dataUser.email, dataUser.password);
+      if (response.status !== 200) {
+        throw new Error((await response.json()).error); // More informative error message
+      }
 
-          updateRegistrationSuccess();
-          setAllowRegister(false);
-          navigate("/profile");
-        } else {
-          throw new Error("Invalid credentials.");
-        }
-      })
-      .catch((error) => {
-        updateRegistrationFail();
-        setAllowRegister(true);
-        console.error("Error:", error);
-      });
+      const data = await response.json();
+      saveLogin(data.data);
+      updateRegistrationSuccess();
+      setAllowRegister(false);
+      navigate("/profile");
+    } catch (error) {
+      updateRegistrationFail(error.message);
+      setAllowRegister(true);
+    }
   };
   // #endregion
 
