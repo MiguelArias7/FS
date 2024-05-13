@@ -16,18 +16,19 @@ function useAriadnaApi() {
     return fetch(`${url}/${context}/login`, options);
   }
 
-  function register(email, password, address, id_departamento, id_municipio) {
+  function register(email, password, name, address, id_departamento, id_municipio) {
     let body = {
       email: email,
       password: password,
       address: address,
+      name: name,
       id_departamento: id_departamento,
       id_municipio: id_municipio,
     };
 
     let options = {
       method: "POST",
-      body: JSON.stringify(body),
+      body: body ? JSON.stringify(body) : JSON.stringify({}),
       headers: {
         "Content-Type": "application/json",
       },

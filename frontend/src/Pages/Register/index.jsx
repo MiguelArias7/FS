@@ -7,7 +7,11 @@ import { Slide, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocationData } from "../../API/useLocationData";
+import { useAriadnaApi } from "../../API/useAriadnaApi";
+
 function Register() {
+  let { register: registerApi } = useAriadnaApi();
+
   const [allowRegister, setAllowRegister] = useState(true);
   let { getDepartamentos, getMunicipios, loadingLocationData } = useLocationData();
 
@@ -23,7 +27,6 @@ function Register() {
   useEffect(() => {
     if (!loadingLocationData) {
       setDepartamentos(getDepartamentos());
-      // setMunicipios(getMunicipios());
     }
   }, [loadingLocationData]);
 
@@ -140,19 +143,10 @@ function Register() {
     });
 
   const onSubmitForm = async (dataUser) => {
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: dataUser ? JSON.stringify(dataUser) : JSON.stringify({}),
-    };
-
     notificationRegister();
 
-    fetch("http://localhost:3000/user/register", options)
+    registerApi(dataUser.email, dataUser.password, dataUser.name, dataUser.address, dataUser.id_municipio, dataUser.id_departamento)
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
           updateRegistrationSuccess();
           setAllowRegister(false);
