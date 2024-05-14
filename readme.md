@@ -21,7 +21,7 @@ El servidor fue construido con Express y Typescript.
 
 Cuenta con la siguientes rutas.
 
-| Ruta           | Verbo HTPP | Descripción                |
+| Ruta           | Verbo HTTP | Descripción                |
 | -------------- | ---------- | -------------------------- |
 | user/register  | POST       | Registrar un nuevo usuario |
 | user/login     | POST       | Realizar login             |
